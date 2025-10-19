@@ -1,0 +1,70 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build output
+dist/
+build/
+out/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.old
+
+# Tests
+jest-html-reporters-*.html
+coverage/
+nyc_output/
+
+# Debug files
+debug/
+*.dSYM/
+
+# Cache
+.cache/
+.eslintcache
+.prettiercache
+
+# Uploads or runtime files
+uploads/
+public/uploads/
+storage/
+
+# Optional: TypeScript output if compiled separately
+*.js
+*.js.map

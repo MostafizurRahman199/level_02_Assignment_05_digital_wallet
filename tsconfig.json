@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    /* ---- Basic paths ---- */
+    "target": "ES2021",                         // modern JS output
+    "module": "CommonJS",                       // required for Node.js with ts-node-dev
+    "rootDir": "src",                           // all TS source code inside src/
+    "outDir": "dist",                           // compiled JS output folder
+
+    /* ---- Environment ---- */
+    "lib": ["ES2021"],                          // enable modern JS features
+    "types": ["node"],                          // import Node.js types automatically
+
+    /* ---- Strict Type Checking ---- */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+
+    /* ---- Module Resolution ---- */
+    "esModuleInterop": true,                    // allows import express from "express"
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+
+    /* ---- Debugging ---- */
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
