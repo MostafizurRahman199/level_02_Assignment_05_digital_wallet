@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-// Extend Express Request type to include auth user info
+// Extend Express Request type
 declare global {
   namespace Express {
     interface Request {
@@ -13,19 +13,23 @@ declare global {
   }
 }
 
-// Verify JWT and attach user info to request
+/**
+ * ✅ Verify JWT from Cookie and attach decoded info to req.auth
+ */
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ success: false, message: "Unauthorized: No token" });
+    // 🍪 Read token from cookies
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
     }
 
-    const token = authHeader.split(" ")[1];
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET not configured");
 
     const decoded = jwt.verify(token, secret) as JwtPayload;
+
     req.auth = {
       sub: decoded.sub as string,
       role: decoded.role as "admin" | "user" | "agent",
@@ -37,7 +41,9 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-// Restrict access by roles (admin, user, agent)
+/**
+ * ✅ Restrict route access by role
+ */
 export const requireRole =
   (...allowedRoles: Array<"admin" | "user" | "agent">) =>
   (req: Request, res: Response, next: NextFunction) => {

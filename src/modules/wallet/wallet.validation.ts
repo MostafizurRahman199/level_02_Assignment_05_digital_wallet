@@ -1,3 +1,5 @@
+// src/modules/wallet/wallet.validation.ts
+
 import { z } from "zod";
 
 export const addMoneySchema = z.object({

@@ -1,9 +1,13 @@
+
+// src/modules/wallet/wallet.controller.ts
+
 import { Request, Response } from "express";
 import { addMoney, withdrawMoney, sendMoney } from "./wallet.service";
 
 export async function deposit(req: Request, res: Response) {
   try {
     const wallet = await addMoney(req.auth!.sub, req.body.amount);
+
     res.status(200).json({ success: true, wallet });
   } catch (err: any) {
     res.status(400).json({ success: false, message: err.message });

@@ -1,3 +1,5 @@
+
+// src/modules/auth/auth.service.ts
 import { User } from "./auth.model";
 import { hashPassword, comparePassword } from "../../utils/hash.util";
 import { generateToken } from "../../utils/jwt";

@@ -1,6 +1,10 @@
+// src/modules/wallet/wallet.service.ts
+
 import mongoose from "mongoose";
 import { Wallet } from "./wallet.model";
 import { User } from "../auth/auth.model";
+
+
 
 export async function addMoney(userId: string, amount: number) {
   const wallet = await Wallet.findOne({ user: userId });
@@ -12,6 +16,9 @@ export async function addMoney(userId: string, amount: number) {
 
   return wallet;
 }
+
+
+
 
 export async function withdrawMoney(userId: string, amount: number) {
   const wallet = await Wallet.findOne({ user: userId });

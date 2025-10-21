@@ -1,3 +1,5 @@
+// src/modules/auth/auth.interface.ts
+
 import { JwtPayload } from "jsonwebtoken";
 import { Types } from "mongoose";
 

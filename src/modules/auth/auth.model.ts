@@ -1,3 +1,5 @@
+// src/modules/auth/auth.model.ts
+
 import { Schema, model } from "mongoose";
 import { IUser, UserRole } from "./auth.interface";
 

@@ -1,3 +1,5 @@
+// src/modules/wallet/wallet.model.ts
+
 import { Schema, model } from "mongoose";
 import { IWallet } from "./wallet.interface";
 

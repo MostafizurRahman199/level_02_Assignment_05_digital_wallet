@@ -1,3 +1,5 @@
+
+// src/modules/auth/auth.route.ts
 import { Router } from "express";
 import { register, login } from "./auth.controller";
 import { registerSchema, loginSchema } from "./auth.validation";
