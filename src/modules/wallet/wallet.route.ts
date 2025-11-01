@@ -1,21 +1,37 @@
-// src/modules/wallet/wallet.route.ts
+//src/modules/wallet/wallet.route.ts
+
 
 import { Router } from "express";
-import { deposit, withdraw, transfer } from "./wallet.controller";
-// import { validateRequest } from "../../middlewares/validateRequest";
-import { addMoneySchema, withdrawSchema, sendMoneySchema } from "./wallet.validation";
-import { requireAuth, requireRole } from "../../middlewares/auth.middleware";
+import { 
+  transfer, 
+  agentCashIn, 
+  getBalance,
+  initiateTopUp,  // ✅ ADD THIS
+  userCashOut
+} from "./wallet.controller";
 import { validateRequest } from "../../middlewares/validateRequest";
+import { sendMoneySchema, topUpSchema, cashOutSchema, agentCashInSchema } from "./wallet.validation"; // ✅ ADD topUpSchema
+import { requireAuth, requireRole } from "../../middlewares/auth.middleware";
 import { UserRole } from "../auth/auth.interface";
-// import { requireAuth, requireRole } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
-// user only
-router.post("/add", requireAuth, requireRole(UserRole.USER), validateRequest(addMoneySchema), deposit);
+// User wallet operations
+router.get("/balance", requireAuth, getBalance); //work
 
-router.post("/withdraw", requireAuth, requireRole(UserRole.USER), validateRequest(withdrawSchema), withdraw);
+router.post("/top-up", requireAuth, requireRole(UserRole.USER), validateRequest(topUpSchema), initiateTopUp); // work
 
-router.post("/send", requireAuth, requireRole(UserRole.USER), validateRequest(sendMoneySchema), transfer);
+
+router.post("/withdraw", requireAuth, requireRole(UserRole.USER), validateRequest(cashOutSchema), userCashOut); //work
+
+
+router.post("/send", requireAuth, requireRole(UserRole.USER), validateRequest(sendMoneySchema), transfer); //work
+
+
+// Agent operations 
+router.post("/agent/cash-in", requireAuth, requireRole(UserRole.AGENT), validateRequest(agentCashInSchema), agentCashIn); //work 
+
+
+
 
 export default router;

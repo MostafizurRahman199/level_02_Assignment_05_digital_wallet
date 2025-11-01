@@ -1,34 +1,183 @@
-
-// src/modules/wallet/wallet.controller.ts
-
 import { Request, Response } from "express";
-import { addMoney, withdrawMoney, sendMoney } from "./wallet.service";
+import { 
+  addMoney, 
+  withdrawMoney, 
+  sendMoney, 
+  cashIn, 
+  cashOut, 
+  getWalletBalance, 
+  initiateTopUpService,
+  cashOutToAgent
+} from "./wallet.service";
 
-export async function deposit(req: Request, res: Response) {
+
+
+
+
+export const deposit = async (req: Request, res: Response) => {
   try {
-    const wallet = await addMoney(req.auth!.sub, req.body.amount);
+    const userId = (req as any).user.sub;
+    const { amount } = req.body;
 
-    res.status(200).json({ success: true, wallet });
-  } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    const wallet = await addMoney(userId, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Money added successfully",
+      data: {
+        balance: wallet.balance,
+        previousBalance: wallet.balance - amount,
+        amountAdded: amount
+      }
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
-}
+};
 
-export async function withdraw(req: Request, res: Response) {
+
+
+
+
+
+export const withdraw = async (req: Request, res: Response) => {
   try {
-    const wallet = await withdrawMoney(req.auth!.sub, req.body.amount);
-    res.status(200).json({ success: true, wallet });
-  } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+    
+    const userId = (req as any).user.sub;
+    const { amount } = req.body;
+
+    const wallet = await withdrawMoney(userId, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Money withdrawn successfully",
+      data: {
+        balance: wallet.balance,
+        previousBalance: wallet.balance + amount,
+        amountWithdrawn: amount
+      }
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
-}
+};
 
-export async function transfer(req: Request, res: Response) {
+
+
+
+
+
+export const transfer = async (req: Request, res: Response) => {
   try {
+    
+    const userId = (req as any).user.sub;
     const { receiverPhone, amount } = req.body;
-    const result = await sendMoney(req.auth!.sub, receiverPhone, amount);
-    res.status(200).json({ success: true, data: result });
-  } catch (err: any) {
-    res.status(400).json({ success: false, message: err.message });
+
+    const result = await sendMoney(userId, receiverPhone, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Money sent successfully",
+      data: {
+        senderBalance: result.senderWallet.balance,
+        receiverBalance: result.receiverWallet.balance,
+        amountSent: amount,
+        fee: result.fee
+      }
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
-}
+};
+
+
+
+
+
+export const agentCashIn = async (req: Request, res: Response) => {
+  try {
+    
+    const agentId = (req as any).user.sub;
+    const { userPhone, amount } = req.body;
+
+    const result = await cashIn(agentId, userPhone, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Cash-in successful",
+      data: {
+        userBalance: result.userWallet.balance,
+        agentBalance: result.agentWallet.balance,
+        amount: amount,
+        commission: result.commission
+      }
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+export const userCashOut = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.sub;
+    const { agentPhone, amount } = req.body;
+
+    const result = await cashOutToAgent(userId, agentPhone, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Cash-out request successful",
+      data: {
+        userBalance: result.userWallet.balance,
+        amount: amount,
+        commission: result.commission,
+        netReceived: amount - result.commission, // Amount user will get in cash
+        agent: result.agent.phone,
+        transactionId: result.transaction._id
+      }
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+export const getBalance = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.sub;
+    const wallet = await getWalletBalance(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Wallet balance fetched successfully",
+      data: wallet
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+export const initiateTopUp = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.sub;
+    const { amount } = req.body;
+
+    const result = await initiateTopUpService(userId, amount);
+
+    res.status(200).json({
+      success: true,
+      message: "Top-up initiated successfully",
+      data: result
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};

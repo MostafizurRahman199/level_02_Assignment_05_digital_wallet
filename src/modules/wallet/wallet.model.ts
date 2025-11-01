@@ -6,7 +6,7 @@ import { IWallet } from "./wallet.interface";
 const walletSchema = new Schema<IWallet>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true, unique: true },
-    balance: { type: Number, default: 50 }, // ✅ initial ৳50
+    balance: { type: Number, default: 50 }, // initial ৳50
     isBlocked: { type: Boolean, default: false },
   },
   { timestamps: true }

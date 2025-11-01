@@ -1,7 +1,5 @@
-// src/modules/auth/auth.interface.ts
-
 import { JwtPayload } from "jsonwebtoken";
-import { Types } from "mongoose";
+import { Types, Document } from "mongoose";
 
 /**
  * Enum for User Roles
@@ -15,16 +13,18 @@ export enum UserRole {
 /**
  * Interface representing a User Document
  */
-export interface IUser {
-  _id?: Types.ObjectId;
+export interface IUser extends Document {
+  _id: Types.ObjectId;
   name: string;
   phone: string;
   password: string;
   role: UserRole;
   wallet?: Types.ObjectId;
-  isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  isActive: boolean;
+  isApproved: boolean;
+  commissionRate: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
@@ -33,4 +33,5 @@ export interface IUser {
 export interface JWTPayload extends JwtPayload {
   sub: string; // user id
   role: UserRole;
+  isApproved: boolean;
 }
