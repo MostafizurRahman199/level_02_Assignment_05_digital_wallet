@@ -1,15 +1,16 @@
 {
   "name": "digital_wallet",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Digital Wallet API similar to bKash/Nagad",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "vercel-build": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["wallet", "digital-wallet", "payment", "api"],
+  "author": "Your Name",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",

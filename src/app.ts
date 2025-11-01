@@ -1,3 +1,4 @@
+// app.ts
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -9,20 +10,39 @@ dotenv.config();
 
 const app: Application = express();
 
-// ✅ Middlewares
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+// ✅ Middlewares - Update CORS for production
+app.use(cors({ 
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", 
+  credentials: true 
+}));
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Request logger (optional)
-app.use((req, _res, next) => {
-  console.log(`${req.method} ${req.originalUrl}`);
-  next();
-});
+// ✅ Request logger (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, _res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+  });
+}
 
 // ✅ Root route
 app.get("/", (req: Request, res: Response) => {
-  res.send("💰 Digital Wallet API is running...");
+  res.json({ 
+    success: true, 
+    message: "💰 Digital Wallet API is running...",
+    version: "1.0.0",
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
+// ✅ Health check route
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ 
+    success: true, 
+    message: "Server is healthy",
+    timestamp: new Date().toISOString()
+  });
 });
 
 // ✅ API routes
