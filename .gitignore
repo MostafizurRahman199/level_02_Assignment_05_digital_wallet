@@ -68,3 +68,4 @@ storage/
 # Optional: TypeScript output if compiled separately
 *.js
 *.js.map
+.vercel
