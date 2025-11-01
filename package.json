@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-      "vercel-build": "npm run build && npm install"  ,
+      "vercel-build": "npm run build && npm install"  
  
   },
   "keywords": ["wallet", "digital-wallet", "payment", "api"],
