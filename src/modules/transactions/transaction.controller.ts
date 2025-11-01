@@ -21,6 +21,8 @@ export const getMyTransactions = async (req: Request, res: Response) => {
   }
 };
 
+
+
 export const getMyCommissions = async (req: Request, res: Response) => {
   try {
     const agentId = (req as any).user.sub;
