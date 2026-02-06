@@ -13,18 +13,20 @@ import { UserRole } from "../auth/auth.interface";
 const router = Router();
 
 // User payment routes
-router.post("/initiate", requireAuth, requireRole(UserRole.USER), initiateAddMoneyController); 
+router.post("/initiate", requireAuth, requireRole(UserRole.USER), initiateAddMoneyController);
 // work
 
-router.get("/history", requireAuth, requireRole(UserRole.USER), getPaymentHistoryController); 
+router.get("/history", requireAuth, requireRole(UserRole.USER), getPaymentHistoryController);
 //work
 
 // SSL Commerz callbacks (no auth required - called by payment gateway)
+router.post("/success", paymentSuccess);
 router.get("/success", paymentSuccess);
+router.post("/fail", paymentFail);
 router.get("/fail", paymentFail);
+router.post("/cancel", paymentCancel);
 router.get("/cancel", paymentCancel);
 router.post("/validate", validatePayment);
-
 
 const paymentRoutes = router;
 export default paymentRoutes;

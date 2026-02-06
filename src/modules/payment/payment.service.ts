@@ -7,18 +7,22 @@ import { PAYMENT_STATUS } from "./payment.interface";
 import { createTransaction } from "../transactions/transaction.service";
 import { TransactionType } from "../transactions/transaction.interface";
 
-
 // Generate unique transaction ID
 const generateTransactionId = (): string => {
   return `TXN${Date.now()}${Math.random().toString(36).substr(2, 9)}`;
 };
 
 export const initiateAddMoney = async (userId: string, amount: number) => {
- 
+  console.log("📝 initiateAddMoney Service Called");
+  console.log("   - userId:", userId);
+  console.log("   - amount:", amount);
+
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
+  console.log("   - User found:", user.name, user.phone);
 
   const transactionId = generateTransactionId();
+  console.log("   - Generated transactionId:", transactionId);
 
   // Create payment record
   const payment = await Payment.create({
@@ -27,16 +31,20 @@ export const initiateAddMoney = async (userId: string, amount: number) => {
     amount,
     status: PAYMENT_STATUS.PENDING,
   });
+  console.log("   - Payment record created:", payment._id);
 
   // Initiate SSL Commerz payment
+  console.log("   - Calling SSLCommerz API...");
   const sslResponse = await SSLService.sslPaymentInit({
     amount,
     transactionId,
     name: user.name,
-    email: user.phone + "@wallet.com", // Using phone as email placeholder
+    email: user.phone + "@wallet.com",
     phone: user.phone,
     address: "Digital Wallet User",
   });
+  console.log("   - SSLCommerz Response Status:", sslResponse.status);
+  console.log("   - GatewayPageURL:", sslResponse.GatewayPageURL);
 
   return {
     paymentId: payment._id,
@@ -44,9 +52,6 @@ export const initiateAddMoney = async (userId: string, amount: number) => {
     paymentUrl: sslResponse.GatewayPageURL,
   };
 };
-
-
-
 
 export const handlePaymentSuccess = async (transactionId: string) => {
   const session = await mongoose.startSession();
@@ -101,8 +106,6 @@ export const handlePaymentSuccess = async (transactionId: string) => {
   }
 };
 
-
-
 export const handlePaymentFailure = async (transactionId: string) => {
   const payment = await Payment.findOne({ transactionId });
   if (!payment) throw new Error("Payment not found");
@@ -116,8 +119,6 @@ export const handlePaymentFailure = async (transactionId: string) => {
     transactionId,
   };
 };
-
-
 
 export const handlePaymentCancel = async (transactionId: string) => {
   const payment = await Payment.findOne({ transactionId });
@@ -133,16 +134,10 @@ export const handlePaymentCancel = async (transactionId: string) => {
   };
 };
 
-
-
 export const getPaymentHistory = async (userId: string, page: number = 1, limit: number = 10) => {
   const skip = (page - 1) * limit;
 
-  const payments = await Payment.find({ user: userId })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .lean();
+  const payments = await Payment.find({ user: userId }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
 
   const total = await Payment.countDocuments({ user: userId });
 

@@ -16,29 +16,29 @@ export const sslPaymentInit = async (payload: ISSLCommerz) => {
     total_amount: payload.amount,
     currency: "BDT",
     tran_id: payload.transactionId,
-    
+
     success_url: `${env.SSL.BACKEND_SUCCESS_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=success`,
     fail_url: `${env.SSL.BACKEND_FAIL_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=fail`,
     cancel_url: `${env.SSL.BACKEND_CANCEL_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=cancel`,
-    
+
     ipn_url: env.SSL.IPN_URL,
     emi_option: 0,
-    
+
     cus_name: payload.name,
     cus_email: payload.email,
     cus_add1: payload.address,
     cus_phone: payload.phone,
-    
+
     cus_add2: "N/A",
     cus_city: "Dhaka",
     cus_state: "Dhaka",
     cus_postcode: "1000",
     cus_country: "Bangladesh",
-    
+
     product_name: "Wallet Top-up",
     product_category: "Service",
     product_profile: "general",
-    
+
     shipping_method: "N/A",
     ship_name: "N/A",
     ship_add1: "N/A",
@@ -53,8 +53,16 @@ export const sslPaymentInit = async (payload: ISSLCommerz) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
+    console.log("🔥 SSLCommerz API Response:", JSON.stringify(response.data, null, 2));
+
+    // Check if the response indicates an error
+    if (response.data.status === "FAILED" || response.data.status === "failed") {
+      throw new Error(`SSLCommerz Error: ${response.data.failedreason || "Unknown error"}`);
+    }
+
     return response.data;
   } catch (error: any) {
+    console.error("❌ SSLCommerz Init Error:", error.response?.data || error.message);
     throw new Error(`SSLCommerz Init Failed: ${error.response?.data || error.message}`);
   }
 };
@@ -78,5 +86,5 @@ export const validatePayment = async (val_id: string) => {
 
 export const SSLService = {
   sslPaymentInit,
-  validatePayment
+  validatePayment,
 };
